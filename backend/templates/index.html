@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kotisivu de Jesse</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="nav-wrapper">
+            <div class="left-side">
+                <div class="nav-link-wrapper">
+                    <a href="index.html">Home</a>
+                    
+                </div>
+                <div class="nav-link-wrapper">
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+        
+            <div class="right-side">
+                <div class="brand">
+                    <div>Jesse Palviainen</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="portfolio-items-wrapper">
+                <a href="sanajahti">
+                    <div class="portfolio-item-wrapper">
+                        <div class="portfolio-img-background" style="background-image:url('static/images/img2.jpg')"></div>
+                        <div class="img-text-wrapper">
+                            <div class="subtitle">
+                                Sanajahti ratkoja
+                            </div>
+                        </div>
+                    </div>
+                </a>
+
+                <div class="portfolio-item-wrapper">
+                    <div class="portfolio-img-background" style="background-image:url('static/images/img4.jpg')"></div>
+                        <a href="wordle">
+                            <div class="img-text-wrapper">
+                                <div class="subtitle">
+                            Leijona
+                                </div>
+                            </div>
+                        </a>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</body>
+
+<script>
+
+const portfolioItems = document.querySelectorAll('.portfolio-item-wrapper');
+
+portfolioItems.forEach(portfolioItem => {
+  portfolioItem.addEventListener('mouseover', () => {
+    console.log(portfolioItem.childNodes[1].classList)
+    portfolioItem.childNodes[1].classList.add('image-blur');
+  });
+
+  portfolioItem.addEventListener('mouseout', () => {
+    console.log(portfolioItem.childNodes[1].classList)
+    portfolioItem.childNodes[1].classList.remove('image-blur');
+  });
+});
+
+</script>
+
+
+
+</html>

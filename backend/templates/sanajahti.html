@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Sanajahti ratkaisu</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/Sanajahti.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+   
+    
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $(document).on('submit',"#input_letters",function(e)
+                    {
+            e.preventDefault();
+            $.ajax({
+            type:'POST',
+            url:'',
+            data:{
+            input_letters:$("#input_letters").serialize()
+            },
+            success:function()  
+            {
+                etsi();
+            }
+        })
+        });
+
+        })
+    </script>
+
+</head>
+<body>
+    <div class="container">
+        <div class="nav-wrapper">
+            <div class="left-side">
+                <div class="nav-link-wrapper">
+                    <a href="index.html">Home</a>
+                    
+                </div>
+                <div class="nav-link-wrapper">
+                    <a href="about.html">About</a>
+                </div>
+            </div>
+        
+            <div class="right-side">
+                <div class="brand">
+                    <div>Jesse Palviainen</div>
+                </div>
+            </div>
+        </div>
+        {% block content %}
+        <div class="content-wrapper-sanajahti" id="content-wrapper-sanajahti">
+            <div class="grid-wrapper" id="grid-wrapper">
+                <form style="width: 100%; height:100%" id="input_letters" name="input_letters" action="" method="post">
+                    <script>document.getElementById("input_letters").addEventListener("keydown", (event) => gridClicked(event));</script>
+                    <div class="sanajahti-grid">
+                            <input class="letter" maxlength="1" id="letter1" name="letter1" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter2" name="letter2" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter3" name="letter3" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter4" name="letter4" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter5" name="letter5" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter6" name="letter6" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter7" name="letter7" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter8" name="letter8" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter9" name="letter9" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter10" name="letter10" type="text"onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter11" name="letter11" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter12" name="letter12" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter13" name="letter13" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter14" name="letter14" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter15" name="letter15" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                            <input class="letter" maxlength="1" id="letter16" name="letter16" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                    </div>
+                </form>
+            </div> 
+            <div class="button-wrapper-sanajahti">
+                <button class="napit-sanajahti" form="input_letters" type="submit" style="background-color: green;">Etsi</button>
+                <button class="napit-sanajahti" onclick="empty()" type="button" style="background-color: black;">Tyhjennä</button>
+            </div>
+            {% endblock %}
+        </div>
+
+    </div>
+</body>
+
+
+
+
+
+</html>
