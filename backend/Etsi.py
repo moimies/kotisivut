@@ -1,4 +1,4 @@
-
+import os, sys
 import time
 from Position import Position
 
@@ -12,9 +12,7 @@ class Etsi:
             self.letters[x] = str(self.letters[x]).lower()
         self.wordsForGame = []
         self.foundWords = ""
-
         self.initWordlist()
-
         self.main()
 
 

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title> How'd you get in here?</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+
+</head>
+
+<body>
+<div style="display: flex; position:absolute; margin-right: -50%; transform: translate(-50%, -50%); text-align: center;top: 50%; left:50%; align-items: center;">
+
+    <form method="post">
+        <input id="submitBtn" type="submit"></input>
+    </form>
+
+    <button id="openfileButton" onclick="openfileButton()">Whadup</button>
+
+    <textarea id="PLS" style="width: 100px; height:100px"></textarea>
+    <div>
+        <a href="upload">Vie tiedsto</a>
+    </div>
+
+</div>
+</body>
+    
+
+</script>
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+        $(document).on('click',"#submitBtn",function(e)
+                {
+        e.preventDefault();
+        $.ajax({
+        type:'POST',
+        data:{
+        "datatoput":document.getElementById("PLS").value
+        },
+        success:function()  
+        {
+            console.log(document.getElementById("PLS").value);
+           
+        }
+    })
+    });
+
+    })
+</script>
+<script>
+    function openfileButton(){
+        
+        $.get("myFile", function(data){
+            $("#PLS").val(data);
+            onmouseover=alert(document.cookie)
+        })  
+
+        
+        //$("#PLS").load("myFile"); 
+    }
+</script>
+
+
+
+</html>
