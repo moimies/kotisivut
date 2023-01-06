@@ -1,0 +1,34 @@
+<html>
+
+<head>
+
+</head>
+
+<body>
+
+    <div style="display:grid;justify-items: center; margin-top:10vw; margin-left:5vw;  width:100%;height:100%" id="file-container"></div>
+<script>
+
+const files = JSON.parse('{{listFiles|tojson|safe}}');
+
+
+for(file in files){
+   console.log(files[file]);
+    f = document.createElement('a')
+    f.href = "/upload/" + files[file];
+    //f.id = file;
+    f.style.width="200px";
+    f.style.height="50px"
+    
+    f.innerHTML = files[file] 
+    document.getElementById("file-container").appendChild(f);
+    console.log(f)
+} 
+
+</script>
+
+
+
+
+</body>
+</html>

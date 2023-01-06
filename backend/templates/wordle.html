@@ -4,6 +4,73 @@
     <meta charset="UTF-8">
     <title>Kotisivu de Jesse</title>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/Wordle.js')}}"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $(document).on('click',"#wordleFind",function(e)
+                    {
+                e.preventDefault();
+                filled = true;
+                colors =[];
+                letterColorPair =[]; 
+
+                document.querySelectorAll(".wordleButtons").forEach(button =>{
+                    const btncolor = window.getComputedStyle(button).backgroundColor;
+                                //console.log(btncolor);
+                    colors.push(btncolor);});
+
+    
+                const letters = document.querySelectorAll(".wordleLetter");
+                    letters.forEach(letter =>{
+                        
+                            
+                            if(letter.value.length != 1){
+                                filled=false;
+                                return;
+                                }
+
+                            if(!(colors.includes(letter.style.backgroundColor))){
+                                
+                                filled = false;
+                                return;
+                                } 
+
+                            if(letter.style.backgroundColor == window.getComputedStyle(document.getElementById("grayBtn")).backgroundColor){
+                                letterColorPair.push(String(letter.value + "0"));
+                            }else if(letter.style.backgroundColor == window.getComputedStyle(document.getElementById("yellowBtn")).backgroundColor){
+                                letterColorPair.push(String(letter.value + "1")); 
+                            }else if(letter.style.backgroundColor == window.getComputedStyle(document.getElementById("greenBtn")).backgroundColor){
+                                letterColorPair.push(String(letter.value + "2")); 
+                            }        
+                        });
+
+                        
+                        if(!filled){
+                            return;
+                        }
+                                   
+                    $.ajax({
+                        type:'POST',
+                        url:"",
+                        dataType:"json",
+                        contentType: "application/json;charset=utf-8",
+                        data:JSON.stringify({letterColorPair}),
+                        complete: function(){
+                            
+                            $("#wordleFound").value = "";
+                            $("#wordleFound").load("wordsFound");
+                            },
+                        error:function(xhr,status,error){console.log(xhr.responseText)} 
+                        
+                        });            
+        });
+
+        });
+    </script>
+
 </head>
 
 <body>
@@ -20,36 +87,69 @@
             </div>
         
             <div class="right-side">
-                <div class="brand">
+                <div class="brand"> 
                     <div>Jesse Palviainen</div>
                 </div>
             </div>
         </div>
 
         <div class="content-wrapper-wordle">
+        <div class="help">?</div>
+        <div class="helpInfo">Tämä on apuri Wordle-peliin (https://www.nytimes.com/games/wordle). Täytä kentät kirjaimilla ja valitse jokaiselle kirjaimelle väri nappia painamalla. Yritykset nollaantuvat sivun päittyessä.
+            Peli ei käytä kaikkia englannin kielen 5-kirjaimisia sanoja, mutta tämä apuri käyttää. per https://github.com/dwyl/english-words
+        </div>
+        <div class="buttonsContainer"> 
+            <button class="wordleButtons" id="grayBtn"></button>
+            <button class="wordleButtons" id="yellowBtn"></button>
+            <button class="wordleButtons" id="greenBtn"></button>
+        </div>
+        <script>
+            $("#grayBtn, #yellowBtn, #greenBtn").mousedown(function(e){
+                e.preventDefault();
+                active = document.activeElement;
+            
+                if(active.className == "wordleLetter"){
+                    const style = window.getComputedStyle(e.target);
+                    active.style.backgroundColor = style.backgroundColor;
+                };  
+            }); 
+        
+        </script>
             <div class="grid-wrapper-wordle">
-                <div class="wordle-grid">
-                            <input class="letter" maxlength="1" id="letter1" name="letter1" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter2" name="letter2" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter3" name="letter3" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter4" name="letter4" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter5" name="letter5" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter6" name="letter6" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter7" name="letter7" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter8" name="letter8" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter9" name="letter9" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter10" name="letter10" type="text"onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter11" name="letter11" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter12" name="letter12" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter13" name="letter13" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter14" name="letter14" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter15" name="letter15" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                            <input class="letter" maxlength="1" id="letter16" name="letter16" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
-                </div>
+                <form id="input_letters_wordle" style="width: 100%; height:100%">
+                    <div class="wordle-grid" id="wordle-grid">
+                        <input class="wordleLetter" maxlength="1" id="wordleLetter1" name="letter1" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                        <input class="wordleLetter" maxlength="1" id="wordleLetter2" name="letter2" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                        <input class="wordleLetter" maxlength="1" id="wordleLetter3" name="letter3" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                        <input class="wordleLetter" maxlength="1" id="wordleLetter4" name="letter4" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                        <input class="wordleLetter" maxlength="1" id="wordleLetter5" name="letter5" type="text" onkeydown="return /[a-zöäå]/i.test(event.key)"></input>
+                    </div>  
+                </form>
+            </div>
+
+            <div id="findFoundContainer" class="findFoundContainer">
+                <button class="wordleFind" id="wordleFind" type="submit" form="input_letters_wordle">Update the list of possible words</button>
+                <div class="wordleFound" id="wordleFound" value="{{eng_alpha}}">{{eng_alpha}}</div>
             </div>
         </div>
 
+        <script>
+            document.getElementById("input_letters_wordle").addEventListener("keydown", function(e) {
+                letterNum = parseInt(e.target.id.substring(12));
 
+                if(e.key == "Backspace" && document.getElementById(e.target.id).value == "" && letterNum != 1){
+                    placeholder = document.getElementById("wordleLetter" + (letterNum - 1)).value;
+                    document.getElementById("wordleLetter" + (letterNum - 1)).value = "";
+                    document.getElementById("wordleLetter" + (letterNum - 1)).focus();
+                    document.getElementById("wordleLetter" + (letterNum - 1)).value = placeholder;
+                }else if(e.key != "Backspace" && !document.getElementById(e.target.id).value == "" ){
+                    if(letterNum == 5 && document.getElementById(e.target.id).value != ""){
+                        document.getElementById("wordleLetter" + 1).focus();
+                    }else{
+                        document.getElementById("wordleLetter" + (letterNum + 1)).focus();
+                    }
+                }
+            })
+        </script>
 </body>
-
 </html>

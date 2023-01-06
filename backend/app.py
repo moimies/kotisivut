@@ -1,26 +1,35 @@
-from asyncore import write
-from crypt import methods
 from flask import Flask, redirect
 from flask import render_template
 from flask import request
 from flask import Response
 from flask import session
 from flask import Flask
+from flask import jsonify
 from flask import flash
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
+import json
 import os
+import sys
+import stat
+import pprint
+import shutil
 
 from flask import url_for
 from Etsi import Etsi
+from Wordle import Wordle
 
 app = Flask(__name__)
-app.secret_key = "test"
+app.secret_key = "seventeenthirtyeight"
 os.chdir('/var/www/html/kotisivut')
 UPLOAD_FOLDER = os.getcwd() + "/minun"
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif','mp4','mp3','wav','doc','zip', 'm4b'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 1000 * 1000 * 1000 
 
+sys.stdout = open("out.txt", "w")
+
+print(os.environ['MY_CREDS'])
 
 @app.route('/')
 @app.route('/index.html')
@@ -36,20 +45,18 @@ def testi():
 
 
 
+
 @app.route('/sanajahti', methods=['GET', 'POST'])
 def sanajahti():
     #print(foundWords)
     if request.method == 'GET':
-        print("IN GET")
         return render_template('sanajahti.html')
     if request.method == 'POST':
-        print("IN POST")
         input_letters = request.form.get("input_letters")
         #input_letters = []
 
         lettersForEtsi = []
-      
-
+    
         for x in range(1,len(input_letters)):
             previous = x -1
             if(input_letters[previous]=='='):
@@ -59,10 +66,25 @@ def sanajahti():
             return ('', 204)
 
         foundWords = Etsi(lettersForEtsi)
+        wordDict = foundWords.wordDict
+        #wordDict = dict(sorted(wordDict.items(), key=lambda key:len(key[0]), reverse=True))
+        with open("wordsFound.json", "w") as output:
+            json.dump(wordDict, output)
+        print(wordDict)
         foundWords = foundWords.foundWords
+        
         #print(foundWords)
         writeOrReadWordsFound("write", foundWords)
         return('', 204)
+
+@app.route("/jsonWordsFound")
+def jsonWordsFound():
+    with open("wordsFound.json", 'r') as infile:
+        json_object = json.load(infile)
+        print((json_object))
+        return jsonify(json_object)
+
+
 
 @app.route('/about.html')
 def about():
@@ -73,15 +95,30 @@ def wordsFound():
     wf = writeOrReadWordsFound("read")
     return Response(wf, mimetype="text/plain")
 
-@app.route("/wordle")
+
+@app.route("/wordle", methods=["POST", "GET"])
 def wordle():
-    return render_template("wordle.html")
+    if request.method == "GET":
+        eng_alpha = writeOrReadWordsFound("read",filepath="eng_alpha.txt")
+        writeOrReadWordsFound("write", towrite=eng_alpha)
+        return render_template("wordle.html",eng_alpha=eng_alpha)
+
+    if request.method == "POST":
+        
+        input_letters_wordle = request.get_json()
+        # print(input_letters_wordle)
+        input_letters_wordle = input_letters_wordle["letterColorPair"]
+        # print(input_letters_wordle)
+        wordl = Wordle(input_letters_wordle, ongoing=True)
+        words = str(wordl.parseWords())
+        writeOrReadWordsFound("write", words)
+        return('', 204)
 
 @app.route("/login", methods=["POST", "GET"])
 def login():
     if request.method == "POST":
         user = request.form.get("username")
-        if user == "manteli":
+        if user == os.environ['MY_CREDS']:
             session["user"] = user
             return redirect(url_for("controls"))
 
@@ -127,26 +164,49 @@ def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
-            flash('No file part')
+            print('No file part')
             return redirect(request.url)
-        file = request.files['file']
+
+        makeFolder = request.form.get("teeKansio")
+        folderName = request.form.get("kansioNimi")
+        makeZip = request.form.get("teeZip")
+        if makeFolder:
+            if len(folderName) == 0:
+                folderName = "DefaultName"
+            os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], folderName))
+            os.chmod(os.path.join(app.config['UPLOAD_FOLDER'], folderName), 0o777)
+            os.mkdir(os.path.join(app.config['UPLOAD_FOLDER'], folderName, folderName)) 
+            os.chmod(os.path.join(app.config['UPLOAD_FOLDER'], folderName, folderName), 0o777)
+
+        files = request.files.getlist('file')
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            flash("not supported file type")
-            return redirect(url_for('download_file', name=filename))
-    return '''
-    <!doctype html>
-    <form method=post enctype=multipart/form-data>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>
-    '''
+        
+        for file in files:
+            if file.filename == '':
+                print('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                if makeFolder:
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], folderName, folderName, filename))
+                    if(makeZip):
+                        archived = shutil.make_archive(os.path.join(app.config['UPLOAD_FOLDER'], folderName), 'zip',os.path.join(app.config['UPLOAD_FOLDER'], folderName) )
+                else:
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                
+        return redirect(url_for('files'))
+    return render_template("upload.html")
+
+@app.route("/files")
+def files():
+    if "user" not in session:
+        return redirect(url_for("login"))    
+    files = os.listdir("./minun")
+
+    return render_template("files.html", listFiles=files)
+
+
 @app.route('/upload/<name>')
 def download_file(name):
     if "user" not in session:
@@ -169,7 +229,6 @@ def writeOrReadWordsFound(writeOrRead, towrite=None, filepath="wordsFound.txt"):
     if(writeOrRead=="write"):
         file = open(filepath, encoding="utf-8", mode="w")
         file.write(towrite)
-        print(towrite)
         print("Kirjoitettu tiedostoon")
         file.close()
 

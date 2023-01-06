@@ -7,17 +7,14 @@ class Position:
         self.letters = letters_
         self.x = x_
         self.mm = madeMoves.copy()
-        self.pm = self.createPossibleDirections()
-
+        self.pm = self.createPossibleDirections() 
+        #max length
         if len(self.mm) < 15:
             self.mm.append(self.x)
             #wordlist.append(self.word())
 
 
-
-
     def createPossibleDirections(self):
-
         possibles = []
         if self.x == 0:
             possibles.append(1)
@@ -128,8 +125,6 @@ class Position:
             else:
                 p.append(item)
         return p
-
-
 
     def word(self):
         word = ""

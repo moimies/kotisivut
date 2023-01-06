@@ -3,64 +3,65 @@
 <head>
     <title> How'd you get in here?</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/styles.css') }}">
 
 
 </head>
 
 <body>
-<div style="display: flex; position:absolute; margin-right: -50%; transform: translate(-50%, -50%); text-align: center;top: 50%; left:50%; align-items: center;">
+    <div class="controls-container">
+        <button style="width:100px;height:100px;" id="openfileButton" onclick="whadup('','',window,200,100)">Whadup</button>
+        <div>
+            <a href="upload" style="color:black; width:100px; height:100px; background-color: blue; ">Vie tiedsto</a>
+        </div>
+        <button id="näytäTiedostot" onclick="showFiles('','',window,200,100)" style="background-color: green;width:100px;height:100px;">Näytä tiedostot</button>
 
-    <form method="post">
-        <input id="submitBtn" type="submit"></input>
-    </form>
-
-    <button id="openfileButton" onclick="openfileButton()">Whadup</button>
-
-    <textarea id="PLS" style="width: 100px; height:100px"></textarea>
-    <div>
-        <a href="upload">Vie tiedsto</a>
     </div>
 
-</div>
-</body>
+
     
 
-</script>
 
-<script type="text/javascript">
 
-    $(document).ready(function(){
-        $(document).on('click',"#submitBtn",function(e)
-                {
-        e.preventDefault();
-        $.ajax({
-        type:'POST',
-        data:{
-        "datatoput":document.getElementById("PLS").value
-        },
-        success:function()  
-        {
-            console.log(document.getElementById("PLS").value);
-           
-        }
-    })
-    });
 
-    })
-</script>
+
 <script>
+
+    function showFiles(url, windowName, win,w,h){
+        const y = win.top.outerHeight / 2 + win.top.screenY - ( h / 2);
+        const x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
+        var newWindow = window.open("/files","", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}")
+        
+
+    } 
+
+    function whadup(url, windowName, win, w,h){
+        const y = win.top.outerHeight / 2 + win.top.screenY - ( h / 2);
+        const x = win.top.outerWidth / 2 + win.top.screenX - ( w / 2);
+        var newWindow = window.open("","", "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${w}, height=${h}, top=${y}, left=${x}")
+        newWindow.document.write("<div style='margin-top:10vw;display:flex;justify-content:center;' id='whadup'><textarea id='text' style='width:50vw;height:50vw;'></textarea><button type='submit' id='sendit'>sendit</button></div>")
+        //newWindow.document.write("<button>sendit</button>")
+        newWindow.document.addEventListener("click", function(event){
+            if(event.target.id == "sendit"){
+                $.post("",{"datatoput":newWindow.document.getElementById("text").value}) 
+            }
+        } )
+
+        wu = newWindow.document.getElementById("text");
+        $(wu).load("myFile");
+    }
+
     function openfileButton(){
         
         $.get("myFile", function(data){
             $("#PLS").val(data);
             onmouseover=alert(document.cookie)
-        })  
-
-        
+        })       
         //$("#PLS").load("myFile"); 
     }
 </script>
 
 
+</body>
 
 </html>

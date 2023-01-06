@@ -26,9 +26,9 @@ function etsi(){
             var results = document.createElement('div');
             //results.style.width=document.getElementById("grid-wrapper").style.width;
             //results.style.height=document.getElementById("grid-wrapper").style.height;
-            results.style.width="13vw";
-            results.style.height="13vw";
-            results.style.backgroundColor = "blue";
+            results.style.width="18vw";
+            results.style.height="18vw";
+            //results.style.backgroundColor = "blue";
             results.style.overflow="scroll";
             results.style.padding="1vw";
             results.style.marginTop="10px";
@@ -40,11 +40,47 @@ function etsi(){
             results.style.alignItems="left";
         
             element.appendChild(results);
-         
         }
+    
+        let avaimet =[];
+        $.getJSON("jsonWordsFound", function(data){
+            document.getElementById("results_id").innerHTML = "";
+            avaimet = Object.keys(data);
+            avaimet.sort(function(a,b){
+                return b.length - a.length;
+            })
+
+            for(key in avaimet){
+                p = document.createElement('li');
+                p.innerHTML = avaimet[key];
+                p.dataset.letters = data[avaimet[key]];
+                document.getElementById("results_id").appendChild(p); 
+
+                p.addEventListener("mouseleave", function(){
+                    theWordArray = this.dataset.letters.split(",");
+                    theWordArray.forEach(function(letterIndex){
+                        document.getElementById("letter" + letterIndex.toString()).style.backgroundColor = "white";
+                    }) 
+
+                })
+
+                p.addEventListener("mouseover",function(){
+                    //console.log(this.dataset.letters)
+                    theWordArray = this.dataset.letters.split(",");
+                    theWordArray.forEach(function(letterIndex){
+                        document.getElementById("letter" + letterIndex.toString()).style.backgroundColor = "yellow";
+                    }) 
+                })
+                
+            }     
+        })
+            
+   
         
-        $("#results_id").load("wordsFound");
+       
         
+        //$("#results_id").load("wordsFound");
+
         
     }else{
         alert("Täytä kaikki kentät")

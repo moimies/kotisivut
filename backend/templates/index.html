@@ -27,23 +27,25 @@
 
         <div class="content-wrapper">
             <div class="portfolio-items-wrapper">
-                <a href="sanajahti">
+                
                     <div class="portfolio-item-wrapper">
-                        <div class="portfolio-img-background" style="background-image:url('static/images/img2.jpg')"></div>
+                        <div class="portfolio-img-background" style="background-image:url('static/images/s.png')"></div>
+                        <a href="sanajahti">
                         <div class="img-text-wrapper">
                             <div class="subtitle">
                                 Sanajahti ratkoja
                             </div>
                         </div>
+                        </a>
                     </div>
-                </a>
+                
 
                 <div class="portfolio-item-wrapper">
-                    <div class="portfolio-img-background" style="background-image:url('static/images/img4.jpg')"></div>
+                    <div class="portfolio-img-background" style="background-image:url('static/images/w.png')"></div>
                         <a href="wordle">
                             <div class="img-text-wrapper">
                                 <div class="subtitle">
-                            Leijona
+                            Wordle apuri
                                 </div>
                             </div>
                         </a>
@@ -62,12 +64,12 @@ const portfolioItems = document.querySelectorAll('.portfolio-item-wrapper');
 
 portfolioItems.forEach(portfolioItem => {
   portfolioItem.addEventListener('mouseover', () => {
-    console.log(portfolioItem.childNodes[1].classList)
+    
     portfolioItem.childNodes[1].classList.add('image-blur');
   });
 
   portfolioItem.addEventListener('mouseout', () => {
-    console.log(portfolioItem.childNodes[1].classList)
+    
     portfolioItem.childNodes[1].classList.remove('image-blur');
   });
 });
