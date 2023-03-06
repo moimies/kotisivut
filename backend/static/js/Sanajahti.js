@@ -38,6 +38,7 @@ function etsi(){
             results.style.border="5px solid black";
             results.id = "results_id";
             results.style.alignItems="left";
+            console.log(document.cookie)
         
             element.appendChild(results);
         }

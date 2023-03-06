@@ -1,5 +1,6 @@
 import string
 from pprint import pprint
+import os
 
 
 # 0 = GREY
@@ -35,62 +36,90 @@ class Wordle:
         lettersDict["green"] = []
         lettersDict["yellow"] = []
         lettersDict["gray"] = []
-
+        to_ignore =[] 
+        new_possibles = []
+        
         for x in range(len(self.guess)):
             if(int(self.guess[x][1]) == 2):
                 lettersDict["green"].append(x)
+                to_ignore.append(x)
             elif(int(self.guess[x][1]) == 1):
                 lettersDict["yellow"].append(x) 
             elif(int(self.guess[x][1]) == 0):
                 lettersDict["gray"].append(x) 
 
-        new_possibles = []
-        
         
         #pprint(lettersDict)
+        #index = MONES KIRJAIN KÄYTTÄJÄN VEIKKAUKSESSA
+        #letter in word
+        #KUTISTA WORDIA MAHDOLLISUUKSIEN KANSSA
         for color in lettersDict:
-            for index in lettersDict[color]:
+            for x in lettersDict[color]:
                 ignore = False
-                if(color == "gray"):
-                    for item in lettersDict["green"]:
-                        if self.guess[index][0] == self.guess[item][0]:
-                            ignore = True
-                            break
-                    for item in lettersDict["yellow"]:
-                        if self.guess[index][0] == self.guess[item][0]:
-                            ignore = True
-                            break
-                if ignore:
-                    break  
+                
+                #print(len(self.possible_words))
 
-                for word in self.possible_words:
-   
-                    if int(self.guess[index][1]) == 0:
-                        if self.guess[index][0] not in word:
-                            new_possibles.append(word.rstrip("\n"))
+                for w in self.possible_words:
+                    word = w.strip()
+                    
+                    if(color == "gray"):
+                        if self.guess[x][0] in list([self.guess[n][0] for n in lettersDict['yellow']]):
+                            ignore = True
+                            break
+                            
+                        mword = ""
+                        
+                        for ign in range(len(word)):
+                            if ign not in to_ignore:
+                                mword += word[ign] 
+                        
+                        if self.guess[x][0] not in mword:
+                            new_possibles.append(word)
+                        #print('gray')
 
                     #KELTAINEN KIRJAIN
-                    elif int(self.guess[index][1]) == 1:
-                        ignore = False
-                        noni = ""
+                    elif (color == "yellow"):
                         
-                        if self.guess[index][0] in word and self.guess[index][0] != word[index]:
-                            for x in range(len(word)):
-                                if x in lettersDict["green"]:
-                                    pass
-                                else:
-                                    noni += word[x]
-                            if self.guess[index][0] in noni:
-                                new_possibles.append(word.rstrip("\n"))
-                    #VIHREÄ
-                    elif int(self.guess[index][1]) == 2:
-                        if self.guess[index][0] == word[index]:
-                            new_possibles.append(word.rstrip("\n"))
+                        y_to_ignore = to_ignore.copy()  
+                        y_to_ignore.append(x)
+                        for m in lettersDict['yellow']:
+                            if x != m:
+                                if self.guess[x][0] in list([self.guess[n][0] for n in lettersDict['yellow']]):
+                                    y_to_ignore.append(m)
+                            
+                        for m in lettersDict['gray']:
+                            if self.guess[x][0] == self.guess[m][0]:
+                                y_to_ignore.append(m)    
 
+                        mword = ""
+                        
+                        for ign in range(len(word)):
+                            if ign not in y_to_ignore:
+                                mword += word[ign] 
+                            
+                        if len(mword) > 0:
+                            if self.guess[x][0] in mword:
+                                new_possibles.append(word)
+                        
+                        #print('yellow')
+                        
+                        #eka vihree, poista vihreät valitut veikkauksesta
+                    elif (color == "green"):
+
+                        if self.guess[x][0] == word[x]:
+                            new_possibles.append(word)
+
+                        #print("green")
+
+
+                print(f"color :{color} ")
+                print(f"new possbles:{len(new_possibles)} ")
+                print(f"self.possib.e :{len(self.possible_words)} ")
+                if not ignore:
+                    self.possible_words = new_possibles
+                    new_possibles = []
                 
-                self.possible_words = new_possibles
-                new_possibles = []
-                
+                    
 
         return self.trimList(self.possible_words)
 
@@ -106,6 +135,9 @@ class Wordle:
 
 
     def trimList(self, l):
+        if(len(l) == 0):
+            print("List is empty")
+            return
         trimmedStr = ""
         for item in l:
             trimmedStr += item + "\n"

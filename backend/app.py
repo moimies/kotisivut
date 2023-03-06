@@ -29,7 +29,7 @@ app.config['MAX_CONTENT_LENGTH'] = 1000 * 1000 * 1000
 
 sys.stdout = open("out.txt", "w")
 
-print(os.environ['MY_CREDS'])
+
 
 @app.route('/')
 @app.route('/index.html')
@@ -70,7 +70,7 @@ def sanajahti():
         #wordDict = dict(sorted(wordDict.items(), key=lambda key:len(key[0]), reverse=True))
         with open("wordsFound.json", "w") as output:
             json.dump(wordDict, output)
-        print(wordDict)
+        
         foundWords = foundWords.foundWords
         
         #print(foundWords)
@@ -81,10 +81,13 @@ def sanajahti():
 def jsonWordsFound():
     with open("wordsFound.json", 'r') as infile:
         json_object = json.load(infile)
-        print((json_object))
+        
         return jsonify(json_object)
 
 
+@app.route("/phase")
+def phase():
+    return render_template("phase.html")
 
 @app.route('/about.html')
 def about():
@@ -132,7 +135,7 @@ def controls():
     
     if request.method == "POST":
         towrite = request.form.get("datatoput")
-        print(towrite)
+        
         writeOrReadWordsFound("write", towrite=towrite, filepath="mulle.txt")
         return('', 204)
     return redirect(url_for("login"))
@@ -146,7 +149,7 @@ def logout():
 def myFile():
     if "user" in session:
         mf = writeOrReadWordsFound("read",filepath="mulle.txt")
-        print(mf)
+        
         return Response(mf, mimetype="text/plain")
     return('', 204)
 
@@ -164,7 +167,7 @@ def upload_file():
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
-            print('No file part')
+            
             return redirect(request.url)
 
         makeFolder = request.form.get("teeKansio")
@@ -184,7 +187,7 @@ def upload_file():
         
         for file in files:
             if file.filename == '':
-                print('No selected file')
+                
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
@@ -222,14 +225,14 @@ def writeOrReadWordsFound(writeOrRead, towrite=None, filepath="wordsFound.txt"):
         found = ""
         for item in file:
             found += str(item)
-        print("Luettu tiedosto")
+        
         file.close()
         return found
     
     if(writeOrRead=="write"):
         file = open(filepath, encoding="utf-8", mode="w")
         file.write(towrite)
-        print("Kirjoitettu tiedostoon")
+        
         file.close()
 
 

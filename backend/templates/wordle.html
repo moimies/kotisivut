@@ -143,7 +143,7 @@
                     document.getElementById("wordleLetter" + (letterNum - 1)).focus();
                     document.getElementById("wordleLetter" + (letterNum - 1)).value = placeholder;
                 }else if(e.key != "Backspace" && !document.getElementById(e.target.id).value == "" ){
-                    if(letterNum == 5 && document.getElementById(e.target.id).value != ""){
+                    if(letterNum == 5 && document.getElementById(e.target.id).value == ""){
                         document.getElementById("wordleLetter" + 1).focus();
                     }else{
                         document.getElementById("wordleLetter" + (letterNum + 1)).focus();

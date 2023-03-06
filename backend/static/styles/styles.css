@@ -188,6 +188,7 @@ body {
     z-index: 1000;
     width:15vw;
     height:15vw;
+    overflow:scroll;
     color:white;
     background:rgba(40,40,40,1);
     border-radius:10%;
